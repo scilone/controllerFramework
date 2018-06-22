@@ -2,8 +2,6 @@
 
 require __DIR__ . '/vendor/autoload.php';
 
-echo '<pre>';
-
 $completeUrl = $_SERVER['REQUEST_URI'];
 $indexFile   = @end(explode('/', $_SERVER['SCRIPT_FILENAME']));
 $indexPath   = $_SERVER['PHP_SELF'];
