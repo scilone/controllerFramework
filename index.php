@@ -1,5 +1,7 @@
 <?php
 
+use App\Config\Loader;
+
 require __DIR__ . '/vendor/autoload.php';
 
 $completeUrl = $_SERVER['REQUEST_URI'];
@@ -11,7 +13,7 @@ $params = explode('/', str_replace($basePath, '', $completeUrl));
 
 $controllerBaseFQCN = 'App\Controller\\';
 $controllerEndFQCN  = 'Controller';
-$controllerPath = '';
+$controllerPath     = '';
 foreach ($params as $param){
     $controllerName = ucfirst(array_shift($params));
 
@@ -32,7 +34,7 @@ foreach ($params as $param){
 
 $action = array_shift($params);
 
-$controller = new $controllerFQCN;
+$controller = Loader::getService($controllerFQCN);
 
 call_user_func_array([$controller, $action], $params);
 
