@@ -14,6 +14,15 @@ class Loader
         ]
     ];
 
+    const NO_LAZY_LOADING = [
+        Service::CONTROLLER_TEST
+    ];
+
+    /**
+     * @var array
+     */
+    private static $services = [];
+
     /**
      * @param string $fqcn
      *
@@ -22,6 +31,10 @@ class Loader
      */
     public static function getService($fqcn)
     {
+        if (isset(self::$services[$fqcn])) {
+            return self::$services[$fqcn];
+        }
+
         $objectReflection = new \ReflectionClass((string) $fqcn);
 
         $args = [];
@@ -31,6 +44,12 @@ class Loader
             } else {
                 $args[$key] = $argument;
             }
+        }
+
+        if (in_array($fqcn, self::NO_LAZY_LOADING) === false) {
+            self::$services[$fqcn] = $objectReflection->newInstanceArgs($args);
+
+            return self::$services[$fqcn];
         }
 
         return $objectReflection->newInstanceArgs($args);
