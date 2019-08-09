@@ -2,32 +2,28 @@
 
 namespace App\Controller;
 
-/**
- * Class TestController
- * @package App\Controller
- */
+use App\Application\Twig;
+
 class TestController
 {
+    /**
+     * @var Twig
+     */
+    private $twig;
+
     /**
      * @var string
      */
     private $helloWorldMsg;
 
-    /**
-     * TestController constructor.
-     *
-     * @param string $helloWorldMsg
-     */
-    public function __construct(string $helloWorldMsg)
+    public function __construct(Twig $twig, string $helloWorldMsg)
     {
+        $this->twig          = $twig;
         $this->helloWorldMsg = $helloWorldMsg;
     }
 
-    /**
-     * @return void
-     */
-    public function helloWorld()
+    public function helloWorld(): void
     {
-        echo $this->helloWorldMsg;
+        echo $this->twig->render('testHelloWorld.html.twig', ['msg' => $this->helloWorldMsg]);
     }
 }

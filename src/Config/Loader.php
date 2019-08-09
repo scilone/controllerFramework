@@ -2,16 +2,13 @@
 
 namespace App\Config;
 
-/**
- * Class Loader
- * @package App
- */
 class Loader
 {
     const SERVICES = [
         Service::CONTROLLER_TEST => [
-            Param::HELLO_WORLD
-        ]
+            Service::APPLICATION_TWIG,
+            Param::HELLO_WORLD,
+        ],
     ];
 
     const NO_LAZY_LOADING = [
@@ -29,20 +26,27 @@ class Loader
      * @throws \ReflectionException
      * @return object
      */
-    public static function getService($fqcn)
+    public static function getService(string $fqcn)
     {
         if (isset(self::$services[$fqcn])) {
             return self::$services[$fqcn];
         }
 
-        $objectReflection = new \ReflectionClass((string) $fqcn);
+        if (class_exists($fqcn) === false) {
+            return null;
+        }
+
+        $objectReflection = new \ReflectionClass($fqcn);
 
         $args = [];
-        foreach (self::SERVICES[$fqcn] as $key => $argument) {
-            if (class_exists($argument) === true) {
-                $args[$key] = self::initClass($argument);
-            } else {
-                $args[$key] = $argument;
+
+        if (isset(self::SERVICES[$fqcn])) {
+            foreach (self::SERVICES[$fqcn] as $key => $argument) {
+                if (class_exists($argument) === true) {
+                    $args[$key] = self::initClass($argument);
+                } else {
+                    $args[$key] = $argument;
+                }
             }
         }
 
@@ -65,11 +69,14 @@ class Loader
     {
         $class = (string) $class;
         $args = [];
-        foreach (self::SERVICES[$class] as $key => $argument) {
-            if (class_exists($argument) === true) {
-                $args[$key] = self::initClass($argument);
-            } else {
-                $args[$key] = $argument;
+
+        if (isset(self::SERVICES[$class])) {
+            foreach (self::SERVICES[$class] as $key => $argument) {
+                if (class_exists($argument) === true) {
+                    $args[$key] = self::initClass($argument);
+                } else {
+                    $args[$key] = $argument;
+                }
             }
         }
 

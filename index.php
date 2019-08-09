@@ -8,13 +8,16 @@ $completeUrl = $_SERVER['REQUEST_URI'];
 $indexFile   = @end(explode('/', $_SERVER['SCRIPT_FILENAME']));
 $indexPath   = $_SERVER['PHP_SELF'];
 $basePath    = str_replace($indexFile, '', $indexPath);
+$envPath     = str_replace($basePath, '', $completeUrl);
 
-$params = explode('/', str_replace($basePath, '', $completeUrl));
+
+$params = explode('/', parse_url($envPath, PHP_URL_PATH));
 
 $controllerBaseFQCN = 'App\Controller\\';
 $controllerEndFQCN  = 'Controller';
 $controllerPath     = '';
-foreach ($params as $param){
+$controllerFQCN     = '';
+foreach ($params as $param) {
     $controllerName = ucfirst(array_shift($params));
 
     $classTest = $controllerBaseFQCN . $controllerName . $controllerEndFQCN;
@@ -36,5 +39,14 @@ $action = array_shift($params);
 
 $controller = Loader::getService($controllerFQCN);
 
+if (method_exists($controller, $action) === false || $controller === null) {
+    responsePage(404);
+}
+
 call_user_func_array([$controller, $action], $params);
 
+function responsePage(int $code): void
+{
+    http_response_code($code);
+    exit;
+}

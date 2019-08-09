@@ -16,5 +16,10 @@
         "psr-4": {
             "App\\Tests\\": "tests/"
         }
+    },
+  "require": {
+        "ext-curl": "*",
+        "ext-json": "*",
+        "twig/twig": "^2.11"
     }
 }
