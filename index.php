@@ -26,7 +26,7 @@ if (in_array($params[0] ?? '', ['css', 'img', 'js'])) {
                 header('Content-Type: ' . mime_content_type($asset));
         }
 
-        require $asset;
+        echo file_get_contents($asset);
         exit;
     }
 }
