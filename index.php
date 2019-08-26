@@ -10,8 +10,26 @@ $indexPath   = $_SERVER['PHP_SELF'];
 $basePath    = str_replace($indexFile, '', $indexPath);
 $envPath     = str_replace($basePath, '', $completeUrl);
 
-
 $params = explode('/', parse_url($envPath, PHP_URL_PATH));
+
+if (in_array($params[0] ?? '', ['css', 'img', 'js'])) {
+    $asset = __DIR__ . '/assets/' . parse_url($envPath, PHP_URL_PATH);
+    if (file_exists($asset)) {
+        switch ($params[0] ?? '') {
+            case 'css':
+                header('content-type: text/css');
+                break;
+            case 'js':
+                header('content-type: application/javascript');
+                break;
+            default:
+                header('Content-Type: ' . mime_content_type($asset));
+        }
+
+        require $asset;
+        exit;
+    }
+}
 
 $controllerBaseFQCN = 'App\Controller\\';
 $controllerEndFQCN  = 'Controller';
