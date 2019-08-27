@@ -8,5 +8,5 @@ Class Service
 
     const APPLICATION_TWIG = 'App\Application\Twig';
 
-    const INFRASTRUCTURE_REQUEST = 'App\Infrastructure\RequestOO';
+    const INFRASTRUCTURE_SUPERGLOBALES = 'App\Infrastructure\SuperglobalesOO';
 }
