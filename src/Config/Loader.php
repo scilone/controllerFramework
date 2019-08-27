@@ -12,7 +12,7 @@ class Loader
     ];
 
     const NO_LAZY_LOADING = [
-        Service::CONTROLLER_TEST
+        Service::CONTROLLER_TEST,
     ];
 
     /**
@@ -65,9 +65,12 @@ class Loader
      * @throws \ReflectionException
      * @return object
      */
-    private static function initClass($class)
+    private static function initClass(string $class)
     {
-        $class = (string) $class;
+        if (isset(self::$services[$class])) {
+            return self::$services[$class];
+        }
+
         $args = [];
 
         if (isset(self::SERVICES[$class])) {
@@ -81,6 +84,12 @@ class Loader
         }
 
         $objectReflection = new \ReflectionClass((string) $class);
+
+        if (in_array($class, self::NO_LAZY_LOADING) === false) {
+            self::$services[$class] = $objectReflection->newInstanceArgs($args);
+
+            return self::$services[$class];
+        }
 
         return $objectReflection->newInstanceArgs($args);
     }
