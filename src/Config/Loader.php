@@ -9,6 +9,10 @@ class Loader
             Service::APPLICATION_TWIG,
             Param::HELLO_WORLD,
         ],
+
+        Service::APPLICATION_TWIG => [
+            Param::TWIG_GLOBAL_VARS,
+        ],
     ];
 
     const NO_LAZY_LOADING = [
@@ -75,7 +79,7 @@ class Loader
 
         if (isset(self::SERVICES[$class])) {
             foreach (self::SERVICES[$class] as $key => $argument) {
-                if (class_exists($argument) === true) {
+                if (is_string($argument) && class_exists($argument) === true) {
                     $args[$key] = self::initClass($argument);
                 } else {
                     $args[$key] = $argument;
